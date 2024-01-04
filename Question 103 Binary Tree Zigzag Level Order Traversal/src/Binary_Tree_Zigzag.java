@@ -8,18 +8,33 @@ public class Binary_Tree_Zigzag {
             this.val = val;
         }
     }
-    public static int level(TreeNode root){
-        if (root==null || (root.left==null && root.right==null)) return 0;
-        return 1+Math.max(level(root.left),level(root.right));
+    public static int height(TreeNode root){
+        if(root==null || (root.left==null && root.right==null)) return 0;
+        return 1+Math.max(height(root.left),height(root.right));
     }
-    public static void nthLevel(TreeNode root,int n){
-        if (root==null) return;
-        if (n==1){
-            System.out.print(root.val+" ");
-            return;
+    public static void leftToRight(TreeNode root,int n,List<Integer> arr){
+        if(root==null) return;
+        if(n==1) arr.add(root.val);
+        leftToRight(root.left,n-1,arr);
+        leftToRight(root.right,n-1,arr);
+    }
+    public static void rightToLeft(TreeNode root,int n,List<Integer> arr){
+        if(root==null) return;
+        if(n==1) arr.add(root.val);
+        rightToLeft(root.right,n-1,arr);
+        rightToLeft(root.left,n-1,arr);
+    }
+    public static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> ans=new ArrayList<>();
+        if (root==null) return ans;
+        int level=height(root)+1;
+        for(int i=1;i<=level;i++){
+            List<Integer> arr=new ArrayList<>();
+            if(i%2!=0) leftToRight(root,i,arr);
+            else rightToLeft(root,i,arr);
+            ans.add(arr);
         }
-        nthLevel(root.left,n-1);
-        nthLevel(root.right,n-1);
+        return ans;
     }
     public static void main(String[] args) {
         TreeNode root=new TreeNode(3);
@@ -31,8 +46,7 @@ public class Binary_Tree_Zigzag {
         TreeNode d=new TreeNode(7);
         b.left=c;
         b.right=d;
-        for (int i=1;i<=level(root)+1;i++) nthLevel(root,i);
-        //List<List<Integer>> ans=zigzagLevelOrder(root);
-        //System.out.println(ans);
+        List<List<Integer>> ans=zigzagLevelOrder(root);
+        System.out.println(ans);
     }
 }
