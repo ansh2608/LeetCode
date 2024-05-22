@@ -1,0 +1,34 @@
+import java.util.*;
+public class Main {
+    public static List<List<String>> partition(String s) {
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+        for (int i = 0; i < n; i++) dp[i][i] = true;
+        for (int length = 2; length <= n; length++) {
+            for (int i = 0; i <= n - length; i++) {
+                int j = i + length - 1;
+                if (s.charAt(i) == s.charAt(j) && (length == 2 || dp[i + 1][j - 1])) dp[i][j] = true;
+            }
+        }
+        List<List<String>> result = new ArrayList<>();
+        backtrack(s, 0, new ArrayList<>(), result, dp);
+        return result;
+    }
+    private static void backtrack(String s, int start, List<String> path, List<List<String>> result, boolean[][] dp) {
+        if (start == s.length()) {
+            result.add(new ArrayList<>(path));
+            return;
+        }
+        for (int end = start; end < s.length(); end++) {
+            if (dp[start][end]) {
+                path.add(s.substring(start, end + 1));
+                backtrack(s, end + 1, path, result, dp);
+                path.removeLast();
+            }
+        }
+    }
+    public static void main(String[] args) {
+        String s = "aab";
+        System.out.println(partition(s));
+    }
+}
